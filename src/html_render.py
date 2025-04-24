@@ -10,7 +10,7 @@ def render_barometer_html(loc: location):
     location_name = loc.name
     output_file = loc.html_file_name
     total_height = 300  # Height of the thermometer column in px
-    fill_height = int((current_capacity / 100) * total_height)
+    fill_height = int((current_capacity / 100) * total_height)+38
     if fill_height > 295:
         fill_height = 295
     
