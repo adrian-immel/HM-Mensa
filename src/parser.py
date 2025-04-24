@@ -36,6 +36,7 @@ This method is used to calculate the percentage of the current clients to the ma
 
 def percentage_calculator(loc: location):
     percent = (loc.clients / loc.static_max_clients)*100
+    percent = round(percent, 1)
     if percent > 100:
         percent = 100
     return percent
