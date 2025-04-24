@@ -18,7 +18,7 @@ def get_location_data(loc: location):
         for ap in data_list:
             for i in loc.specific_access_points:
                 if i in ap["target"]:
-                    datapoint = ap["datapoints"][-1]  # get the second last datapoint to prevent inconsistent data
+                    datapoint = ap["datapoints"][-2]  # get the second last datapoint to prevent inconsistent data
                     loc.timestamp = datapoint[1]
                     loc.update_clients(datapoint[0])
     else:
