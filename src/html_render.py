@@ -11,6 +11,8 @@ def render_barometer_html(loc: location):
     output_file = loc.html_file_name
     total_height = 300  # Height of the thermometer column in px
     fill_height = int((current_capacity / 100) * total_height)
+    if fill_height > 295:
+        fill_height = 295
     
     # Format the timestamp
     update_time = datetime.fromtimestamp(timestamp).strftime('%H:%M')
@@ -165,7 +167,7 @@ def render_barometer_html(loc: location):
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: {total_height-30}px;
+            height: {total_height}px;
             margin-bottom: 55px;
         }}
 
