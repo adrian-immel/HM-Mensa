@@ -195,7 +195,7 @@ def render_barometer_html(loc: location):
     <!-- Navigation Menu -->
     <nav class="nav-menu">
         <ul>
-            <li><a href="mensa_loth.html">Mensa Lothstr.</a></li>
+            <li><a href="index.html">Mensa Lothstr.</a></li>
             <li><a href="mensa_pasing.html">Mensa Pasing</a></li>
             <li><a href="cafe_karl.html">StuCafe Karlstr.</a></li>
             <li><a href="cafe_loth.html">StuCafe Lothstr.</a></li>
