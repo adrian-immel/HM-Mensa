@@ -1,6 +1,6 @@
 import sys
 from datetime import datetime
-
+import pytz
 import location
 
 
@@ -15,7 +15,7 @@ def render_barometer_html(loc: location):
         fill_height = 295
     
     # Format the timestamp
-    update_time = datetime.fromtimestamp(timestamp).strftime('%H:%M')
+    update_time = datetime.fromtimestamp(timestamp, pytz.timezone('Europe/Berlin')).strftime('%H:%M')
 
     if current_capacity < 33:
         fill_color = "#00e64d"  # Green
