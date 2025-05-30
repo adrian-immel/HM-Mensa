@@ -1,3 +1,7 @@
 requests~=2.32.0
 PyYAML~=6.0.2
 pytz~=2025.2
+flask~=3.1.0
+flask-crontab~=0.1.2
+gunicorn~=23.0.0
+jsonpickle~=4.0.5

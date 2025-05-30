@@ -2,12 +2,12 @@ import requests
 import location
 import time
 
-"""
-This method is used to get the data from the LRZ API.
-:param loc: the location to get the data from
-"""
 
-
+class lrzApiParser:
+    """
+    This method is used to get the data from the LRZ API.
+    :param loc: the location to get the data from
+    """
 def get_location_data(loc: location):
     url = "http://graphite-kom.srv.lrz.de/render/?from=-10minutes&target=ap.ap*-?" + loc.lrz_subdistrict_id + "*.ssid.*&format=json"
     time.sleep(1)  # sleep to prevent ratelimit from Api
@@ -38,4 +38,6 @@ def percentage_calculator(loc: location):
     percent = int((loc.clients / loc.static_max_clients)*100)
     if percent > 100:
         percent = 100
+    if percent < 7:
+        percent = 7
     return percent
