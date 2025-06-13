@@ -52,7 +52,7 @@ if __name__ == '__main__':
                   minute='6/5', # läuft alle 5 min um 6 nach (da die lrz api extrem langsam zum updaten ist
                   second=15)
     sched.start()
-    print(listofjsonLocationObjects)
+    print(location_list)
     app.run()
 
 
