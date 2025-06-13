@@ -21,8 +21,8 @@ def calculate_trend(datapoints):
 
     if slope > 0.5 and percent_between_datapoints < 40:
         return_val = "increasing"
-    elif slope < -0.5:
-        return_val = "decreasing" and percent_between_datapoints < 40
+    elif slope < -0.5 and percent_between_datapoints < 40:
+        return_val = "decreasing"
     else:
         return_val = "flat"
 

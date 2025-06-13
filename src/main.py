@@ -28,6 +28,7 @@ def run_schedule():
                       location_object.capacity_level_in_percent, location_object.timestamp, trend)
         temp_listofjsonLocationObjects.append(json_object.get_json())
     listofjsonLocationObjects = temp_listofjsonLocationObjects
+    print("Data updated from LRZ")
 
 
 

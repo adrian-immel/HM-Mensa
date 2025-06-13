@@ -15,7 +15,7 @@ class Json_Location:
     clients: int
     capacity_level_in_percent: float
     time: str
-    trend: str
+    trend: str = None
 
     def __init__(self, name: str, static_max_clients: int, clients: int, capacity_level_in_percent: float, timestamp: int, trend: str):
         self.name = name
