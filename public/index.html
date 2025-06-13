@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University Canteen Capacity</title>
     <style>
+        :root {
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --sidebar-bg: #fff;
+            --sidebar-shadow: rgba(0, 0, 0, 0.1);
+            --sidebar-border: #eee;
+            --sidebar-hover-bg: #f0f0f0;
+            --sidebar-active-bg: #e0e0e0;
+            --thermometer-bg: #e0e0e0;
+            --update-time-color: #666;
+            --hamburger-color: #333;
+            --dark-mode-toggle-bg: #333; /* Color for the dark mode circle */
+        }
+
+        body.dark-mode {
+            --background-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --sidebar-bg: #2a2a2a;
+            --sidebar-shadow: rgba(255, 255, 255, 0.1);
+            --sidebar-border: #3a3a3a;
+            --sidebar-hover-bg: #3a3a3a;
+            --sidebar-active-bg: #4a4a4a;
+            --thermometer-bg: #3a3a3a;
+            --update-time-color: #bbb;
+            --hamburger-color: #f5f5f5;
+            --dark-mode-toggle-bg: #f5f5f5; /* Color for the dark mode circle in dark mode */
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,12 +41,14 @@
         }
 
         body {
-            background-color: #f5f5f5;
+            background-color: var(--background-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             position: relative;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .hamburger {
@@ -32,7 +62,7 @@
         .hamburger div {
             width: 30px;
             height: 3px;
-            background-color: #333;
+            background-color: var(--hamburger-color);
             margin: 6px 0;
             transition: 0.4s;
         }
@@ -43,8 +73,8 @@
             left: -250px;
             width: 250px;
             height: 100%;
-            background-color: #fff;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            background-color: var(--sidebar-bg);
+            box-shadow: 2px 0 5px var(--sidebar-shadow);
             transition: 0.3s;
             z-index: 99;
             padding-top: 60px;
@@ -61,17 +91,17 @@
 
         .sidebar li {
             padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--sidebar-border);
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
         .sidebar li:hover {
-            background-color: #f0f0f0;
+            background-color: var(--sidebar-hover-bg);
         }
 
         .sidebar li.active {
-            background-color: #e0e0e0;
+            background-color: var(--sidebar-active-bg);
             font-weight: bold;
         }
 
@@ -94,7 +124,7 @@
         .thermometer {
             width: 40px;
             height: 300px;
-            background-color: #e0e0e0;
+            background-color: var(--thermometer-bg);
             border-radius: 20px;
             position: relative;
             overflow: visible;
@@ -109,21 +139,21 @@
             transform: translateX(-50%);
             width: 60px;
             height: 60px;
-            background-color: #e0e0e0;
+            background-color: var(--thermometer-bg);
             border-radius: 50%;
-            border: 5px solid #e0e0e0;
+            border: 5px solid var(--thermometer-bg);
         }
 
         .thermometer-fill {
             width: 100%;
-            background-color: #00e676;
+            background-color: #00e676; /* This color will be set by JS */
             position: absolute;
             bottom: 30px;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             transition: height 0.5s ease-in-out;
             z-index: 1;
-        }   
+        }
 
         .thermometer-fill::after {
             content: '';
@@ -161,7 +191,7 @@
 
         .update-time {
             margin-top: 40px;
-            color: #666;
+            color: var(--update-time-color);
             font-size: 0.9em;
         }
 
@@ -197,6 +227,10 @@
             z-index: 1000;
         }
 
+        body.dark-mode .loading {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
         .loading-spinner {
             width: 50px;
             height: 50px;
@@ -221,6 +255,19 @@
                 margin-top: 60px;
             }
         }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--dark-mode-toggle-bg);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -232,6 +279,9 @@
         <div></div>
         <div></div>
         <div></div>
+    </div>
+
+    <div class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -279,6 +329,22 @@
                 sidebar.classList.add('open');
                 overlay.style.display = 'block';
                 sidebarOpen = true;
+            }
+        }
+
+        // Dark mode toggle function
+        function toggleDarkMode() {
+            const body = document.body;
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            body.classList.toggle('dark-mode');
+            // No need to toggle 'active' class on the toggle itself as it's just a circle
+            // darkModeToggle.classList.toggle('active');
+
+            // Save dark mode preference to local storage
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark-mode', 'enabled');
+            } else {
+                localStorage.setItem('dark-mode', 'disabled');
             }
         }
 
@@ -335,7 +401,7 @@
             // Check for location parameter in URL
             const locationParam = getUrlParameter('location');
             if (locationParam) {
-                const locationIndex = canteenData.findIndex(loc => 
+                const locationIndex = canteenData.findIndex(loc =>
                     loc.name.toLowerCase() === locationParam.toLowerCase());
                 if (locationIndex !== -1) {
                     selectLocation(locationIndex);
@@ -344,7 +410,7 @@
             }
 
             // If no URL parameter or invalid location, select Mensa Lothstr.
-            const defaultIndex = canteenData.findIndex(loc => 
+            const defaultIndex = canteenData.findIndex(loc =>
                 loc.name.toLowerCase().includes('lothstr'));
             if (defaultIndex !== -1) {
                 selectLocation(defaultIndex);
@@ -424,6 +490,13 @@
 
         // Initialize the app
         async function initApp() {
+            // Check for saved dark mode preference
+            if (localStorage.getItem('dark-mode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                // The toggle itself doesn't need 'active' class anymore if it's just a circle
+                // document.getElementById('darkModeToggle').classList.add('active');
+            }
+
             await fetchData();
             setupAutoRefresh();
         }

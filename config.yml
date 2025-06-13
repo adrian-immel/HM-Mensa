@@ -1,31 +1,20 @@
-- !!python/object:location.location
-  capacity_level_in_percent: 0.01
-  clients: 1
-  lrz_subdistrict_id: rf
-  name: Cafeteria_Karlstr
-  specific_access_points:
-  - apa06-4rf
-  static_max_clients: 100
-  timestamp: 1744302000
-- !!python/object:location.location
-  capacity_level_in_percent: 0.04
-  clients: 10
-  lrz_subdistrict_id: rh
-  name: Mensa_Lothstr
-  specific_access_points:
-  - apa02-1rh
-  - apa03-1rh
-  - apa05-0rh
-  - apa06-0rh
-  static_max_clients: 280
-  timestamp: 1744302000
-- !!python/object:location.location
-  capacity_level_in_percent: 0.0
-  clients: 0
-  lrz_subdistrict_id: rl
-  name: Mensa_Pasing
-  specific_access_points:
-  - apa15-0rl
-  - apa18-0rl
-  static_max_clients: 120
-  timestamp: 1744302000
+- name: "StuCafe Karlstraße"
+  lrz_subdistrict_id: "rf"
+  max_clients: 75
+  access_points: ["apa06-4rf"]
+- name: "Mensa Lothstraße"
+  lrz_subdistrict_id: "rh"
+  max_clients: 280
+  access_points: ["apa02-1rh", "apa03-1rh", "apa06-0rh", "apa05-0rh"]
+- name: "Mensa Pasing"
+  lrz_subdistrict_id: "rl"
+  max_clients: 130
+  access_points: ["apa15-0rl", "apa18-0rl"]
+- name: "StuCafe Pasing"
+  lrz_subdistrict_id: "rl"
+  max_clients: 80
+  access_points: ["apa16-1rl"]
+- name: "StuCafe Lothstraße"
+  lrz_subdistrict_id: "rr"
+  max_clients: 85
+  access_points: ["apa36-0rr"]

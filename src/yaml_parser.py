@@ -1,10 +1,19 @@
 import yaml
 from yaml import SafeLoader
+from location_model import Location
 
-with open('config.yml', 'r') as f:
-    data = yaml.full_load(f)
 
-# Print the values as a dictionary
-with open('config.yml', 'r') as f:
-    yaml_data = list(yaml.load_all(f, Loader=SafeLoader))
-    print(yaml_data)
+def get_location_list():
+    location_list: list[Location] = []
+    with open('config.yml', 'r') as f:
+        yaml_data = yaml.load(f, Loader=SafeLoader)
+    for item in yaml_data:
+        location = Location(
+            name=item['name'],
+            lrz_subdistrict_id=item['lrz_subdistrict_id'],
+            static_max_clients=item['max_clients'],
+            specific_access_points=item.get('access_points')
+        )
+        location_list.append(location)
+    return location_list
+
