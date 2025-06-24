@@ -1,20 +1,25 @@
-- name: "StuCafe Karlstraße"
-  lrz_subdistrict_id: "rf"
-  max_clients: 75
-  access_points: ["apa06-4rf"]
 - name: "Mensa Lothstraße"
   lrz_subdistrict_id: "rh"
   max_clients: 280
   access_points: ["apa02-1rh", "apa03-1rh", "apa06-0rh", "apa05-0rh"]
+  canteen_id: "mensa-lothstr"
 - name: "Mensa Pasing"
   lrz_subdistrict_id: "rl"
   max_clients: 130
   access_points: ["apa15-0rl", "apa18-0rl"]
+  canteen_id: "mensa-pasing"
 - name: "StuCafe Pasing"
   lrz_subdistrict_id: "rl"
   max_clients: 80
   access_points: ["apa16-1rl"]
+  canteen_id:
 - name: "StuCafe Lothstraße"
   lrz_subdistrict_id: "rr"
   max_clients: 85
   access_points: ["apa36-0rr"]
+  canteen_id:
+- name: "StuCafe Karlstraße"
+  lrz_subdistrict_id: "rf"
+  max_clients: 75
+  access_points: [ "apa06-4rf" ]
+  canteen_id: "stucafe-karlstr"

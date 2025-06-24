@@ -14,6 +14,7 @@ class Location:
     specific_access_points: Optional[list] = None
     capacity_level_in_percent: float = None
     timestamp: int = None
+    canteen_id: str = None
 
     def __post_init__(self):
         self.clients = []

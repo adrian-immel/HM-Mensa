@@ -12,7 +12,7 @@ class lrz_Api_Parser:
         url = "http://graphite-kom.srv.lrz.de/render/?from=-10minutes&target=ap.ap*-?" + loc.lrz_subdistrict_id + "*.ssid.*&format=json"
         data_list = requests.get(url, timeout=30).json()
         if not data_list or None:
-            raise ConnectionError("Could not get or parse the json from LRZ")
+            print("Could not get or parse the json from LRZ")
         loc.append_new_client_row() #apped new row to client list
         if loc.specific_access_points is not None:
             for ap in data_list:

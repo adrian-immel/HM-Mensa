@@ -12,7 +12,8 @@ def get_location_list():
             name=item['name'],
             lrz_subdistrict_id=item['lrz_subdistrict_id'],
             static_max_clients=item['max_clients'],
-            specific_access_points=item.get('access_points')
+            specific_access_points=item.get('access_points'),
+            canteen_id = item['canteen_id']
         )
         location_list.append(location)
     return location_list
