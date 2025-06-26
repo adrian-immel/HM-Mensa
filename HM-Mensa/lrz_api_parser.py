@@ -1,7 +1,7 @@
 import requests
 import logging
 
-from src.location_model import Location
+from location_model import Location
 
 
 class lrz_Api_Parser:

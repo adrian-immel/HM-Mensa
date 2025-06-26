@@ -2,7 +2,7 @@ import requests
 import json
 import logging
 from datetime import datetime
-from src.dish_model import dish_model
+from dish_model import dish_model
 
 def update_menu(canteen_id:str):
     logging.info(f"Fetching menu data from eat-api for canteen: {canteen_id}")

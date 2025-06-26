@@ -1,17 +1,15 @@
 import numpy as np
 
 def calculate_trend(datapoints):
-    # Überprüfe, ob genau drei Werte vorhanden sind
     if len(datapoints) < 3:
         return None
-    # Konvertiere die Eingabeliste in ein NumPy-Array
+
     npdata = np.array(datapoints)
 
-    # Berechne die Steigung (1. Ableitung) der linearen Approximation
     x = np.array([0, 1, 2])
     y = npdata
 
-    # Führe eine lineare Regression durch
+    # Calculate the grade (1. derivative) of the Approximation
     coefficients = np.polyfit(x, y, 1)
     slope = coefficients[0]
     if datapoints[-1] != 0:  # Prevent ZeroDivisionError

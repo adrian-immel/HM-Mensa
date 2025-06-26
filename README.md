@@ -1,9 +1,8 @@
 # Projektübersicht
 Dieses Projekt stellt über eine Flask-Webanwendung aktuelle Auslastungsdaten (Kapazität) von verschiedenen Mensen (LRZ-API) sowie Speisepläne (TUM-Campus-Mensa-API) bereit. Die Daten werden periodisch per Scheduler aktualisiert und über einfache HTTP-Endpoints ausgeliefert.
-## Voraussetzungen
-- Python 3.13.3
-- virtualenv
-- Linux/macOS/Windows mit Bash-kompatibler Shell
+## Git
+
+Das ganze Projekt kann auch auf [meinem GitHub](https://github.com/adrian-immel/HM-Mensa/tree/Abgabe) eingesehen werden.
 
 ## Installation
 Installieren Sie alle Abhängigkeiten:
@@ -32,8 +31,8 @@ python main.py
 ```
 Standardmäßig läuft der Server unter `http://127.0.0.1:5000/`.
 Beim Start werden folgende Tasks ausgeführt bzw. geplant:
-- Initiales Abrufen und Cachen der Kapazitätsdaten
-- Initiales Abrufen und Cachen der Menü-Daten
+- Initiales Abrufen der Kapazitätsdaten
+- Initiales Abrufen der Menü-Daten
 - Hintergrund-Scheduler:
     - Kapazitäts-Update alle 5 Minuten
     - Menü-Update täglich um 00:00:30
@@ -63,21 +62,22 @@ curl http://127.0.0.1:5000/api/menu
 curl http://127.0.0.1:5000/api/menu?canteen_id=mensa-inntenstadt
 ```
 ## Projektstruktur
-``` 
-├── main.py                  # Entry Point, Flask-Routes & Scheduler
-├── requirements.txt         # Alle benötigten Bibliotheken
-├── config.yaml              # Konfigurationsdatei für Standorte
-├── yaml_parser.py           # Läd Locations aus YAML
-├── lrz_api_parser.py        # Abruf und Berechnung der Kapazität
-├── trend_calculator.py      # Trendberechnung aus historischen Daten
-├── eat_api_parser.py        # Abruf des Mensa-Menüs
-├── json_location_model.py
-├── menu_Api_model.py
-├── dish_model.py
-├── location_model.py  
-├── public/
-│   └── index.html           # Frontend
-└── log/                     # Logs
+```
+└── HM-Mensa 
+  ├── main.py                  # Entry Point, Flask-Routes & Scheduler
+  ├── requirements.txt         # Alle benötigten Bibliotheken
+  ├── config.yaml              # Konfigurationsdatei für Standorte
+  ├── yaml_parser.py           # Läd Locations aus YAML
+  ├── lrz_api_parser.py        # Abruf und Berechnung der Kapazität
+  ├── trend_calculator.py      # Trendberechnung aus historischen Daten
+  ├── eat_api_parser.py        # Abruf des Mensa-Menüs
+  ├── json_location_model.py
+  ├── menu_Api_model.py
+  ├── dish_model.py
+  ├── location_model.py  
+  ├── public/
+  │   └── index.html           # Frontend
+  └── logs/                     # Logs
 
 ```
 ## Bibliotheken

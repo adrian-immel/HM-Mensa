@@ -5,13 +5,11 @@ from datetime import datetime
 
 from flask import Flask, send_from_directory, jsonify, request
 from apscheduler.schedulers.background import BackgroundScheduler
-from src.json_location_model import Json_Location
-from src.lrz_api_parser import lrz_Api_Parser
-import src.yaml_parser as yaml_parser
-import src.trend_calculator as trend_calculator
-from src.eat_api_parser import update_menu
-
-from src.menu_Api_model import Menu_Api_Model
+from json_location_model import Json_Location
+from lrz_api_parser import lrz_Api_Parser
+import yaml_parser as yaml_parser
+import trend_calculator as trend_calculator
+from menu_Api_model import Menu_Api_Model
 
 # Configure logging
 def setup_logging():
@@ -72,7 +70,7 @@ def run_schedule_menu():
     logging.info("Menu data updated for all canteens")
 
 
-# Serve index_old.html from the current directory
+# Serve index.html from the current directory
 @app.route('/')
 def index():
    return send_from_directory('public', 'index.html')
