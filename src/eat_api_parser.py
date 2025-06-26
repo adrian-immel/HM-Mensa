@@ -8,7 +8,7 @@ def update_menu(canteen_id:str):
     json_data = requests.get(url, timeout=30).json()
     dishes = get_dishes_for_current_date(json_data)
     if not dishes or None:
-        print("Could not get or parse the json from eat-api")
+        print("Could not get or parse the json from eat-api for location: " + canteen_id)
     return_dishes: list[dish_model] = []
     for dish in dishes:
         return_dishes.append(dish_model(dish['name'], dish['dish_type'], dish.get('labels')))

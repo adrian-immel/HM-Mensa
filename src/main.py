@@ -7,7 +7,6 @@ from src.json_location_model import Json_Location
 from  lrz_api_parser import lrz_Api_Parser
 import yaml_parser
 import trend_calculator
-import time
 
 from src.menu_Api_model import Menu_Api_Model
 
@@ -20,7 +19,7 @@ list_of_menu_models: list[Menu_Api_Model]
 
 """
 This method runs every 5 minutes.
-Its the main method of the program to get data and create the json files.
+Its the method of the program to get capacity data from LRZ.
 """
 def run_schedule_capacity():
     temp_listofjsonLocationObjects: list = []
@@ -35,6 +34,10 @@ def run_schedule_capacity():
     listofjsonLocationObjects = temp_listofjsonLocationObjects
     print("Data updated from LRZ")
 
+"""
+This method runs every night a 0 a Clock.
+Its the method of the program to get menu data from the Tum Api.
+"""
 def run_schedule_menu():
     global list_of_menu_models
     temp_list_of_menu_models: list[Menu_Api_Model] = []
@@ -52,7 +55,7 @@ def index():
    return send_from_directory('../public', 'index.html')
 
 
-# API endpoint
+# API endpoint capacity
 @app.route('/api/capacity', methods=['GET'])
 def capacity_api():
     location = request.args.get('location')
@@ -62,7 +65,7 @@ def capacity_api():
     return jsonify([asdict(location) for location in listofjsonLocationObjects])
 
 
-
+# API endpoint menu
 @app.route('/api/menu', methods=['GET'])
 def menu_api():
     canteen_id = request.args.get('canteen_id')

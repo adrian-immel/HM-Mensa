@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import jsonpickle
 
 from eat_api_parser import update_menu
 import  dish_model
@@ -15,6 +14,3 @@ class Menu_Api_Model:
 
     def fill_dishes_for_today(self):
         self.dishes_for_today = update_menu(self.canteen_id)
-
-    def get_json(self):
-        return jsonpickle.encode(self, unpicklable=False)
