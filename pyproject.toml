@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hm-mensa"
+version = "0.1.0"
+description = "Flask-based service for canteen capacity and menu data"
+readme = "README.md"
+requires-python = ">=3.8,<4.0"
+authors = [
+  { name = "Adrian Immel ", email = "immel@hm.edu" }
+]
+dependencies = [
+  "requests~=2.32.0",
+  "PyYAML~=6.0.2",
+  "pytz~=2025.2",
+  "flask~=3.1.0",
+  "APScheduler~=3.11.0",
+  "numpy~=2.3.0"
+]
+
+[project.urls]
+"Repository" = "https://github.com/adrian-immel/HM-Mensa"
+
+[project.scripts]
+hm-mensa = "main:app"
