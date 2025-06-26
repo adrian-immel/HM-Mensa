@@ -477,6 +477,7 @@
 
     // Function to fetch data for a specific location
     async function fetchLocationData(locationName) {
+        window.currentLocation = locationName;
         showLoading();
         try {
             // New API request: use 'location' tag in GET request
@@ -558,7 +559,7 @@
     }
 
 
-    
+
 async function fetchAndDisplayMenu(canteenId) {
     const menuContainer = document.getElementById('menuContent');
     try {
@@ -577,10 +578,10 @@ async function fetchAndDisplayMenu(canteenId) {
 
         let html = '<ul style="list-style:none; padding:0;">';
         dishes.forEach(dish => {
-            const allergiesHtml = dish.allergies.map(a => 
+            const allergiesHtml = dish.allergies.map(a =>
                 `<span class="allergen" title="${a[0]}">${a[1]} <span class="emoji-tooltip">${a[0]}</span></span>`
             ).join('    ');
-            
+
             html += `
                 <li style="margin-bottom: 20px;">
                     <strong>${dish.dish_name}</strong> <em>(${dish.dish_type})</em><br/>
@@ -590,7 +591,7 @@ async function fetchAndDisplayMenu(canteenId) {
         });
         html += '</ul>';
         menuContainer.innerHTML = html;
-        
+
         // Add CSS for the tooltip effect
         const styleElement = document.createElement('style');
         styleElement.textContent = `
@@ -658,10 +659,16 @@ async function fetchAndDisplayMenu(canteenId) {
 
         const locationFromUrl = getUrlParameter('location');
         fetchAndPopulateSidebar(locationFromUrl); // Pass the URL parameter to control initial load
-        // repeat capacity every minute (60 000 ms)
-        setInterval(updateDisplay, 60 * 1000);
-        // repeat meals every hour (3 600 000 ms)
-        setInterval(fetchAndDisplayMenu, 60 * 60 * 1000);
+
+        // Save locationName globally so we can reuse it
+        window.currentLocation = locationFromUrl;
+
+        // Periodically refetch data
+        setInterval(() => {
+            if (window.currentLocation) {
+                fetchLocationData(window.currentLocation);
+            }
+        }, 60 * 1000); // every minute
 
 
     });

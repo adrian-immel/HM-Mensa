@@ -9,8 +9,6 @@ from src.json_location_model import Json_Location
 from src.lrz_api_parser import lrz_Api_Parser
 import src.yaml_parser as yaml_parser
 import src.trend_calculator as trend_calculator
-from src.eat_api_parser import update_menu
-
 from src.menu_Api_model import Menu_Api_Model
 
 # Configure logging
