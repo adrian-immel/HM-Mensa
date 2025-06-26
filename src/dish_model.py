@@ -8,7 +8,6 @@ class dish_model:
     allergies: list
 
 
-
     def __init__(self, dish_name, dish_type, labes):
         self.dish_name = dish_name
         self.dish_type = dish_type
@@ -68,8 +67,10 @@ class dish_model:
             "VEGAN": "🫑",
             "VEGETARIAN": "🥕"
         }
+        temp_allergies = []
         for label in labes:
             if label in label_to_emoji:
-                self.allergies.append({label: label_to_emoji[label]})
+                temp_allergies.append((label, label_to_emoji[label]))
             else:
-                self.allergies.append({label: None})  # Empty string if no acronym found
+                temp_allergies.append((label, None))  # Empty string if no acronym found
+        self.allergies = temp_allergies

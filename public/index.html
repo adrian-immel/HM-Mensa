@@ -382,235 +382,210 @@
     <div class="update-time" id="updateTime">Letztes Update: --:--</div>
 
     <script>
-        // Global variables
-        let canteenData = [];
-        let currentLocation = null;
-        let sidebarOpen = false;
+    // Constants for API endpoints (adjust if your base URL changes)
+    const API_BASE_URL = '/api/capacity'; // e.g., 'http://localhost:8080/api/canteen_data'
 
-        // Toggle sidebar function
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.querySelector('.overlay');
+    // Function to get URL parameter
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
 
-            if (sidebarOpen) {
-                sidebar.classList.remove('open');
-                overlay.style.display = 'none';
-                sidebarOpen = false;
+    // Function to update URL parameter without reloading
+    function updateUrlParameter(locationName) {
+        const url = new URL(window.location.href);
+        if (locationName) {
+            url.searchParams.set('location', locationName);
+        } else {
+            url.searchParams.delete('location');
+        }
+        history.pushState({}, '', url.toString());
+    }
+
+    // Function to set the active class on the sidebar item
+    function setActiveSidebarItem(locationName) {
+        const locationListItems = document.querySelectorAll('#locationList li');
+        locationListItems.forEach(item => {
+            if (item.textContent === locationName) {
+                item.classList.add('active');
             } else {
-                sidebar.classList.add('open');
-                overlay.style.display = 'block';
-                sidebarOpen = true;
+                item.classList.remove('active');
             }
-        }
+        });
+    }
 
-        // Dark mode toggle function
-        function toggleDarkMode() {
-            const body = document.body;
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            body.classList.toggle('dark-mode');
-            // No need to toggle 'active' class on the toggle itself as it's just a circle
-            // darkModeToggle.classList.toggle('active');
-
-            // Save dark mode preference to local storage
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('dark-mode', 'enabled');
-            } else {
-                localStorage.setItem('dark-mode', 'disabled');
+    // Function to fetch all locations for the sidebar
+    async function fetchAndPopulateSidebar(initialLocationName = null) {
+        showLoading();
+        try {
+            const response = await fetch(`/api/capacity`); // Fetch all locations
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
+            const locations = await response.json(); // This will be an array of objects
 
-        // Function to update trend display
-        function updateTrendDisplay(trend) {
-            const trendIndicator = document.getElementById('trendIndicator');
-            const trendIcon = document.getElementById('trendIcon');
-            const trendText = document.getElementById('trendText');
-
-            // Remove all existing trend classes
-            trendIndicator.classList.remove('trend-increasing', 'trend-decreasing', 'trend-flat', 'trend-no-data');
-
-            switch (trend) {
-                case 'increasing':
-                    trendIndicator.classList.add('trend-increasing');
-                    trendIcon.textContent = '⭧';
-                    trendText.textContent = 'Trend: Auslastung steigt';
-                    break;
-                case 'decreasing':
-                    trendIndicator.classList.add('trend-decreasing');
-                    trendIcon.textContent = '⭨';
-                    trendText.textContent = 'Trend: Auslastung sinkt';
-                    break;
-                case 'flat':
-                    trendIndicator.classList.add('trend-flat');
-                    trendIcon.textContent = '⭢';
-                    trendText.textContent = 'Trend: Auslastung stabil';
-                    break;
-                case null:
-                default:
-                    trendIndicator.classList.add('trend-no-data');
-                    trendIcon.textContent = '❔';
-                    trendText.textContent = 'Trend: Keine Daten verfügbar';
-                    break;
-            }
-        }
-
-        // Fetch data from API
-        async function fetchData() {
-            try {
-                const response = await fetch('/api');
-                const data = await response.json();
-
-                // Parse the JSON strings in the array
-                canteenData = data.map(item => JSON.parse(item));
-
-                // Initialize the UI
-                initializeUI();
-
-                // Hide loading screen
-                document.querySelector('.loading').style.display = 'none';
-
-                return canteenData;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.querySelector('.loading').style.display = 'none';
-                alert('Error loading data. Please try again later.');
-            }
-        }
-
-        // Add this function to get URL parameters
-        function getUrlParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // Modify the initializeUI function
-        function initializeUI() {
             const locationList = document.getElementById('locationList');
-            locationList.innerHTML = '';
+            locationList.innerHTML = ''; // Clear existing list
 
-            // Create location list in sidebar
-            canteenData.forEach((location, index) => {
-                const li = document.createElement('li');
-                li.textContent = location.name;
-                li.dataset.index = index;
-                li.addEventListener('click', () => {
-                    selectLocation(index);
-                    toggleSidebar();
-                    // Update URL when location is selected
-                    const url = new URL(window.location);
-                    url.searchParams.set('location', location.name);
-                    window.history.pushState({}, '', url);
-                });
-                locationList.appendChild(li);
+            locations.forEach(location => {
+                const listItem = document.createElement('li');
+                listItem.textContent = location.name; // Use the 'name' property
+                listItem.onclick = () => {
+                    fetchLocationData(location.name); // Pass the 'name' for single location request
+                    toggleSidebar(); // Close sidebar after selection
+                    updateUrlParameter(location.name); // Update URL when selected
+                    setActiveSidebarItem(location.name); // Set active class
+                };
+                locationList.appendChild(listItem);
             });
 
-            // Check for location parameter in URL
-            const locationParam = getUrlParameter('location');
-            if (locationParam) {
-                const locationIndex = canteenData.findIndex(loc =>
-                    loc.name.toLowerCase() === locationParam.toLowerCase());
-                if (locationIndex !== -1) {
-                    selectLocation(locationIndex);
-                    return;
-                }
-            }
-
-            // If no URL parameter or invalid location, select Mensa Lothstr.
-            const defaultIndex = canteenData.findIndex(loc =>
-                loc.name.toLowerCase().includes('lothstr'));
-            if (defaultIndex !== -1) {
-                selectLocation(defaultIndex);
-            } else if (canteenData.length > 0) {
-                // Fallback to first location if Mensa Lothstr. is not found
-                selectLocation(0);
-            }
-        }
-
-        // Select and display location data
-        function selectLocation(index) {
-            currentLocation = canteenData[index];
-
-            // Update active state in sidebar
-            const listItems = document.querySelectorAll('#locationList li');
-            listItems.forEach(item => item.classList.remove('active'));
-            listItems[index].classList.add('active');
-
-            // Update UI with selected location data
-            updateLocationDisplay();
-        }
-
-        // Update display with current location data
-        function updateLocationDisplay() {
-            if (!currentLocation) return;
-
-            const locationTitle = document.getElementById('locationTitle');
-            const thermometerFill = document.getElementById('thermometerFill');
-            const updateTime = document.getElementById('updateTime');
-
-            // Update location name
-            locationTitle.textContent = currentLocation.name;
-
-            // Update thermometer fill
-            thermometerFill.style.height = `${currentLocation.capacity_level_in_percent}%`;
-
-            // Determine fill color
-            let fillColor;
-
-            const percent = currentLocation.capacity_level_in_percent;
-
-            if (percent < 25) {
-                fillColor = "#00e676"; // Green
-            } else if (percent < 50) {
-                fillColor = "#ffeb3b"; // Yellow
-            } else if (percent < 75) {
-                fillColor = "#ff9800"; // Orange
-            } else {
-                fillColor = "#f44336"; // Red
-            }
-
-            // Update thermometer color
-            thermometerFill.style.backgroundColor = fillColor;
-
-            // Update trend display
-            updateTrendDisplay(currentLocation.trend);
-
-            // Update time
-            updateTime.textContent = `Letztes Update: ${currentLocation.time}`;
-        }
-
-        // Auto-refresh data every 5 minutes
-        function setupAutoRefresh() {
-            setInterval(async () => {
-                const previousData = JSON.stringify(canteenData);
-                await fetchData();
-
-                // If current location still exists, find and select it
-                if (currentLocation) {
-                    const index = canteenData.findIndex(item => item.name === currentLocation.name);
-                    if (index !== -1) {
-                        selectLocation(index);
-                    } else {
-                        // If location no longer exists, select the first one
-                        selectLocation(0);
+            // If an initial location is provided (from URL), try to load it
+            if (initialLocationName) {
+                const foundLocation = locations.find(loc => loc.name === initialLocationName);
+                if (foundLocation) {
+                    fetchLocationData(initialLocationName);
+                    setActiveSidebarItem(initialLocationName);
+                } else {
+                    // If the URL location is not found, default to the first one
+                    if (locations.length > 0) {
+                        fetchLocationData(locations[0].name);
+                        updateUrlParameter(locations[0].name); // Update URL to default
+                        setActiveSidebarItem(locations[0].name);
                     }
                 }
-            }, 60 * 1000); // 1 minutes
-        }
-
-        // Initialize the app
-        async function initApp() {
-            // Check for saved dark mode preference
-            if (localStorage.getItem('dark-mode') === 'enabled') {
-                document.body.classList.add('dark-mode');
-                // The toggle itself doesn't need 'active' class anymore if it's just a circle
-                // document.getElementById('darkModeToggle').classList.add('active');
+            } else if (locations.length > 0) {
+                // If no initial location and no URL param, load the first location by default
+                fetchLocationData(locations[0].name);
+                updateUrlParameter(locations[0].name); // Update URL to default
+                setActiveSidebarItem(locations[0].name);
             }
 
-            await fetchData();
-            setupAutoRefresh();
+        } catch (error) {
+            console.error('Error fetching and populating sidebar:', error);
+            document.getElementById('locationTitle').textContent = 'Error loading locations.';
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Function to fetch data for a specific location
+    async function fetchLocationData(locationName) {
+        showLoading();
+        try {
+            // New API request: use 'location' tag in GET request
+            const response = await fetch(`/api/capacity?location=${encodeURIComponent(locationName)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json(); // This will be an array, but likely with one object
+
+            updateDisplay(data);
+        } catch (error) {
+            console.error('Error fetching location data:', error);
+            document.getElementById('locationTitle').textContent = `Error loading ${locationName}`;
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Function to update the main display (thermometer, trend, time)
+    function updateDisplay(data) {
+        document.getElementById('locationTitle').textContent = data.name; // Use 'name'
+
+        // Update Trend Indicator
+        const trendIcon = document.getElementById('trendIcon');
+        const trendText = document.getElementById('trendText');
+        const trendIndicator = document.getElementById('trendIndicator');
+
+        // Reset classes first
+        trendIndicator.className = 'trend-indicator';
+        trendIcon.textContent = '';
+        trendText.textContent = '';
+
+        switch (data.trend) {
+            case 'increasing':
+                trendIcon.textContent = '⭧';
+                trendText.textContent = 'Trend: Auslastung steigt';
+                trendIndicator.classList.add('trend-increasing');
+                break;
+            case 'decreasing':
+                trendIcon.textContent = '⭨';
+                trendText.textContent = 'Trend: Auslastung sinkt';
+                trendIndicator.classList.add('trend-decreasing');
+                break;
+            case 'flat':
+                trendIcon.textContent = '⭢';
+                trendText.textContent = 'Trend: Auslastung stabil';
+                trendIndicator.classList.add('trend-flat');
+                break;
+            default:
+                trendIcon.textContent = '-';
+                trendText.textContent = 'Trend: Keine Daten verfügbar';
+                trendIndicator.classList.add('trend-no-data');
+                break;
         }
 
-        // Start the app when the page loads
-        window.addEventListener('load', initApp);
-    </script>
+        // Update Thermometer Fill
+        const thermometerFill = document.getElementById('thermometerFill');
+        // 'capacity_level_in_percent' is directly usable as percentage
+        const fillHeight = Math.min(Math.max(data.capacity_level_in_percent, 0), 100); // Ensure between 0 and 100
+        thermometerFill.style.height = `${fillHeight}%`;
+
+        // Set thermometer fill color based on capacity
+        let fillColor;
+        if (fillHeight < 30) {
+            fillColor = '#4caf50'; // Green
+        } else if (fillHeight < 70) {
+            fillColor = '#ffc107'; // Yellow
+        } else {
+            fillColor = '#f44336'; // Red
+        }
+        thermometerFill.style.backgroundColor = fillColor;
+
+        // Update Last Updated Time
+        const updateTimeElement = document.querySelector('.update-time');
+        if (updateTimeElement) {
+             updateTimeElement.textContent = `Stand: ${data.time} Uhr`; // Use 'time'
+        }
+    }
+
+
+    // --- UI/UX related functions (assuming these are already in your HTML) ---
+
+    function showLoading() {
+        document.querySelector('.loading').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.querySelector('.loading').style.display = 'none';
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.querySelector('.overlay');
+        sidebar.classList.toggle('open');
+        overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Apply dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        const locationFromUrl = getUrlParameter('location');
+        fetchAndPopulateSidebar(locationFromUrl); // Pass the URL parameter to control initial load
+    });
+</script>
 </body>
 </html>

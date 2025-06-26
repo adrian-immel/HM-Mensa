@@ -1,7 +1,6 @@
 import requests
 import json
 from datetime import datetime
-
 from src.dish_model import dish_model
 
 def update_menu(canteen_id:str):
@@ -12,7 +11,7 @@ def update_menu(canteen_id:str):
         print("Could not get or parse the json from eat-api")
     return_dishes: list[dish_model] = []
     for dish in dishes:
-        return_dishes.append(dish_model({dish['name']}, {dish['dish_type']}, dish.get('labels', [])))
+        return_dishes.append(dish_model(dish['name'], dish['dish_type'], dish.get('labels')))
     return return_dishes
 
 def get_dishes_for_current_date(json_data):
