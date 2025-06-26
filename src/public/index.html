@@ -380,6 +380,11 @@
     </div>
 
     <div class="update-time" id="updateTime">Letztes Update: --:--</div>
+<div id="menuSection" style="margin-top: 30px; max-width: 800px; width: 90%;">
+    <h2>Heutiges Menü</h2>
+    <div id="menuContent">Wird geladen...</div>
+</div>
+
 
     <script>
     // Constants for API endpoints (adjust if your base URL changes)
@@ -482,6 +487,7 @@
             const data = await response.json(); // This will be an array, but likely with one object
 
             updateDisplay(data);
+        fetchAndDisplayMenu(data.canteen_id);
         } catch (error) {
             console.error('Error fetching location data:', error);
             document.getElementById('locationTitle').textContent = `Error loading ${locationName}`;
@@ -552,6 +558,73 @@
     }
 
 
+    
+async function fetchAndDisplayMenu(canteenId) {
+    const menuContainer = document.getElementById('menuContent');
+    try {
+        const response = await fetch(`/api/menu?canteen_id=${encodeURIComponent(canteenId)}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const menuData = await response.json();
+        const dishes = menuData.dishes_for_today;
+
+        if (dishes.length === 0) {
+            menuContainer.innerHTML = '<p>Keine Daten für heute verfügbar.</p>';
+            return;
+        }
+
+        let html = '<ul style="list-style:none; padding:0;">';
+        dishes.forEach(dish => {
+            const allergiesHtml = dish.allergies.map(a => 
+                `<span class="allergen" title="${a[0]}">${a[1]} <span class="emoji-tooltip">${a[0]}</span></span>`
+            ).join('    ');
+            
+            html += `
+                <li style="margin-bottom: 20px;">
+                    <strong>${dish.dish_name}</strong> <em>(${dish.dish_type})</em><br/>
+                    <small>${allergiesHtml || 'Keine Allergene angegeben'}</small>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        menuContainer.innerHTML = html;
+        
+        // Add CSS for the tooltip effect
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            .allergen {
+                position: relative;
+                cursor: help;
+            }
+            .emoji-tooltip {
+                display: none;
+                position: absolute;
+                background-color: rgba(0,0,0,0.8);
+                color: white;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 14px;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                white-space: nowrap;
+                z-index: 100;
+                margin-bottom: 5px;
+            }
+            .allergen:hover .emoji-tooltip {
+                display: block;
+            }
+        `;
+        document.head.appendChild(styleElement);
+    } catch (error) {
+        console.error('Fehler beim Laden des Menüs:', error);
+        menuContainer.innerHTML = '<p>Keine Daten für diesen Ort verfügbar.</p>';
+    }
+}
+
+
     // --- UI/UX related functions (assuming these are already in your HTML) ---
 
     function showLoading() {
@@ -585,6 +658,12 @@
 
         const locationFromUrl = getUrlParameter('location');
         fetchAndPopulateSidebar(locationFromUrl); // Pass the URL parameter to control initial load
+        // repeat capacity every minute (60 000 ms)
+        setInterval(updateDisplay, 60 * 1000);
+        // repeat meals every hour (3 600 000 ms)
+        setInterval(fetchAndDisplayMenu, 60 * 60 * 1000);
+
+
     });
 </script>
 </body>
