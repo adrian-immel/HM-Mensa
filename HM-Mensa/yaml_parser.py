@@ -1,7 +1,7 @@
 import yaml
 from yaml import SafeLoader
 from location_model import Location
-from src.menu_Api_model import Menu_Api_Model
+from menu_Api_model import Menu_Api_Model
 
 
 def get_location_list():
