@@ -2,8 +2,8 @@
 Dieses Projekt stellt über eine Flask-Webanwendung aktuelle Auslastungsdaten (Kapazität) von verschiedenen Mensen (LRZ-API) sowie Speisepläne (TUM-Campus-Mensa-API) bereit. Die Daten werden periodisch per Scheduler aktualisiert und über einfache HTTP-Endpoints ausgeliefert.
 ## Git
 
-Das ganze Projekt kann auch auf [meinem GitHub](https://github.com/adrian-immel/HM-Mensa/tree/Abgabe) eingesehen werden.
-
+Das ganze Projekt kann auch auf [meinem GitHub](https://github.com/adrian-immel/HM-Mensa/tree/Abgabe) eingesehen werden. \
+Das Projekt in Prod umgebung kann [hier](https://mensa.redcube.dev) eingesehen werden
 ## Installation
 Installieren Sie alle Abhängigkeiten:
 ``` bash
