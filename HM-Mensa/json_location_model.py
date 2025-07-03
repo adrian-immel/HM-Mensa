@@ -1,7 +1,6 @@
 """
 This class is used to store the data of a location.
 """
-import jsonpickle
 from datetime import datetime
 import pytz
 from dataclasses import dataclass
@@ -26,6 +25,3 @@ class Json_Location:
         self.time = datetime.fromtimestamp(timestamp, pytz.timezone('Europe/Berlin')).strftime('%H:%M')
         self.trend = trend
         self.canteen_id = canteen_id
-
-    def get_json(self):
-        return jsonpickle.encode(self, unpicklable=False)

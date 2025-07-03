@@ -67,10 +67,66 @@ class dish_model:
             "VEGAN": "🫑",
             "VEGETARIAN": "🥕"
         }
+
+        label_to_german = {
+            "GLUTEN": "Gluten",
+            "WHEAT": "Weizen",
+            "RYE": "Roggen",
+            "BARLEY": "Gerste",
+            "OAT": "Hafer",
+            "SPELT": "Dinkel",
+            "HYBRIDS": "Hybridgetreide",
+            "SHELLFISH": "Schalentiere",
+            "CHICKEN_EGGS": "Hühnereier",
+            "FISH": "Fisch",
+            "PEANUTS": "Erdnüsse",
+            "SOY": "Soja",
+            "MILK": "Milch",
+            "LACTOSE": "Laktose",
+            "ALMONDS": "Mandeln",
+            "HAZELNUTS": "Haselnüsse",
+            "WALNUTS": "Walnüsse",
+            "CASHEWS": "Cashewnüsse",
+            "PECAN": "Pekannüsse",
+            "PISTACHIOS": "Pistazien",
+            "MACADAMIA": "Macadamianüsse",
+            "CELERY": "Sellerie",
+            "MUSTARD": "Senf",
+            "SESAME": "Sesam",
+            "SULPHURS": "Schwefel",
+            "SULFITES": "Sulfite",
+            "LUPIN": "Lupine",
+            "MOLLUSCS": "Weichtiere",
+            "SHELL_FRUITS": "Schalenfrüchte",
+            "BAVARIA": "Bayern",
+            "MSC": "MSC",
+            "DYESTUFF": "Farbstoffe",
+            "PRESERVATIVES": "Konservierungsstoffe",
+            "ANTIOXIDANTS": "Antioxidantien",
+            "FLAVOR_ENHANCER": "Geschmacksverstärker",
+            "WAXED": "gewachst",
+            "PHOSPHATES": "Phosphate",
+            "SWEETENERS": "Süßungsmittel",
+            "PHENYLALANINE": "Phenylalanin",
+            "COCOA_CONTAINING_GREASE": "Kakaofett",
+            "GELATIN": "Gelatine",
+            "ALCOHOL": "Alkohol",
+            "PORK": "Schweinefleisch",
+            "BEEF": "Rindfleisch",
+            "VEAL": "Kalbfleisch",
+            "WILD_MEAT": "Wildfleisch",
+            "LAMB": "Lammfleisch",
+            "GARLIC": "Knoblauch",
+            "POULTRY": "Geflügel",
+            "CEREAL": "Getreide",
+            "MEAT": "Fleisch",
+            "VEGAN": "Vegan",
+            "VEGETARIAN": "Vegetarisch"
+        }
         temp_allergies = []
         for label in labes:
             if label in label_to_emoji:
-                temp_allergies.append((label, label_to_emoji[label]))
+                temp_allergies.append((label_to_german[label], label_to_emoji[label]))
             else:
                 temp_allergies.append((label, None))  # Empty string if no acronym found
         self.allergies = temp_allergies
