@@ -36,6 +36,7 @@ listofjsonLocationObjects: list = []
 location_list: list = []
 list_of_menu_models: list[Menu_Api_Model] = []
 
+
 """
 This method runs every 5 minutes.
 Its the method of the program to get capacity data from LRZ.
@@ -98,31 +99,35 @@ def menu_api():
                 return jsonify(asdict(menu_model))
     return jsonify([asdict(menu) for menu in list_of_menu_models])
 
+
+
+# init
+
+setup_logging()
+logging.info("Loading location data from YAML configuration")
+location_list = yaml_parser.get_location_list()
+
+logging.info("Running initial LRZ data update")
+run_schedule_capacity()
+
+logging.info("Running initial menu data update")
+run_schedule_menu()
+
+logging.info("Setting up scheduler")
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(run_schedule_capacity,
+              trigger='cron',
+              minute='6/5',  # every 5 min at 6 after (the LRZ api is really slow)
+              second=45)
+
+sched.add_job(run_schedule_menu,
+              trigger='cron',
+              hour='0',
+              second=30)  # every day at 00:00 and 30 sec
+sched.start()
+
+logging.info("Loaded locations: " + ", ".join([loc.name for loc in location_list]))
+
 if __name__ == '__main__':
-    setup_logging()
-    logging.info("Loading location data from YAML configuration")
-    location_list = yaml_parser.get_location_list()
-    
-    logging.info("Running initial LRZ data update")
-    run_schedule_capacity()
-
-    logging.info("Running initial menu data update")
-    run_schedule_menu()
-
-    logging.info("Setting up scheduler")
-    sched = BackgroundScheduler(daemon=True)
-    sched.add_job(run_schedule_capacity,
-                  trigger='cron',
-                  minute='6/5',  # every 5 min at 6 after (the LRZ api is really slow)
-                  second=45)
-
-    sched.add_job(run_schedule_menu,
-                  trigger='cron',
-                  hour='0',
-                  second=30) # every day at 00:00 and 30 sec
-    sched.start()
-    
-    logging.info("Loaded locations: " + ", ".join([loc.name for loc in location_list]))
-
     logging.info("Starting Flask web server")
     app.run()

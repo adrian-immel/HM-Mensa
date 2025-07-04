@@ -1,6 +1,6 @@
 import yaml
 from yaml import SafeLoader
-from location_model import Location
+from src.location_model import Location
 from src.menu_Api_model import Menu_Api_Model
 
 
