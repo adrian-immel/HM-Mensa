@@ -1,25 +1,31 @@
-FROM python:3.9-slim
+# Use an official Python runtime as a parent image
+FROM python:3.13
 
-LABEL authors="Adrian Immel"
+# Set working directory
+WORKDIR /app
 
-# Set environment variables
-ENV PYTHONUNBUFFERED 1
-
-# Set the working directory
-WORKDIR /src
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first to leverage Docker cache
+# Copy requirements file
 COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application
+# Install FastWSGI for production
+RUN pip install --no-cache-dir fastwsgi
+
+# Copy the project files
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 5000
+# Create logs directory
+RUN mkdir -p logs
 
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "your_app:ap
+# Set environment variables
+ENV FLASK_APP=src/main.py
+ENV FLASK_ENV=production
+ENV PYTHONPATH=/app
+
+# Expose port
+EXPOSE 8000
+
+# Run the application with FastWSGI
+CMD ["python", "-m", "fastwsgi.cli", "--app", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
