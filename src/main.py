@@ -14,14 +14,14 @@ from src.menu_Api_model import Menu_Api_Model
 # Configure logging
 def setup_logging():
     # Create logs directory if it doesn't exist
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
+    if not os.path.exists('../logs'):
+        os.makedirs('../logs')
     
     # Configure file and console handlers
-    log_filename = f"logs/hm_mensa_{datetime.now().strftime('%Y-%m-%d')}.log"
+    log_filename = f"../logs/hm_mensa_{datetime.now().strftime('%Y-%m-%d')}.log"
     
     logging.basicConfig(
-        level=logging.WARNING,
+        level=logging.ERROR,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.FileHandler(log_filename),
@@ -70,7 +70,7 @@ def run_schedule_menu():
     logging.info("Menu data updated for all canteens")
 
 
-# Serve index_old.html from the current directory
+# Serve index.html from the current directory
 @app.route('/')
 def index():
    return send_from_directory('public', 'index.html')

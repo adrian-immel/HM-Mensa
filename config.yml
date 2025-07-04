@@ -22,4 +22,4 @@
   lrz_subdistrict_id: "rf"
   max_clients: 75
   access_points: [ "apa06-4rf" ]
-  canteen_id: "stucafe-karlstr"
+  canteen_id:
