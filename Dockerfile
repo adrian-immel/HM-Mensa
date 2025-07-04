@@ -23,9 +23,6 @@ RUN mkdir -p logs
 RUN sed -i 's|../config.yml|/app/config.yml|g' /app/src/yaml_parser.py && \
     sed -i 's|../logs|/app/logs|g' /app/src/main.py
 
-## declare volumes
-VOLUME /app/logs
-VOLUME /app/config.yml
 
 # Set environment variables
 ENV FLASK_APP=src/main.py
