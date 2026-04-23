@@ -11,7 +11,7 @@ class lrz_Api_Parser:
     """
     def get_location_data(loc: Location):
         logging.info(f"Fetching LRZ API data for location: {loc.name}, subdistrict ID: {loc.lrz_subdistrict_id}")
-        url = "http://graphite-kom.srv.lrz.de/render/?from=-10minutes&target=ap.ap*-?" + loc.lrz_subdistrict_id + "*.ssid.*&format=json"
+        url = "https://graphite.wlan.lrz.de/render/?from=-10minutes&target=ap.ap*-?" + loc.lrz_subdistrict_id + "*.ssid.*&format=json"
         
         try:
             response = requests.get(url, timeout=30)
